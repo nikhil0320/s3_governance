@@ -47,7 +47,6 @@ def lambda_handler(event, context):
     bucketName = event['detail']['requestParameters']['bucketName']
     subscriberAccountId = event['account']
     sessionName = context.function_name
-    #sessionName = 's3_governance'
     cbcapMgmtRoleName = os.environ['mgmt_role_common_name']
     s3 = get_aws_resource('s3', subscriberAccountId, cbcapMgmtRoleName, sessionName)
     if not encryption_enabled(bucketName, s3, subscriberAccountId):
