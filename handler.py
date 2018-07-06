@@ -21,7 +21,7 @@ def encryption_enabled(bucketName, s3, subscriberAccountId):
         if 'ServerSideEncryptionConfigurationNotFoundError' in str(error):
             return False
         else:
-            logger.logError(Bucket f'{bucketName} in {subscriberAccountId} not encrypted due to following error: \n {error}')
+            logger.logError(f'Bucket {bucketName} in {subscriberAccountId} not encrypted due to following error: \n {error}')
             message = f'S3 Bucket {bucketName} in {subscriberAccountId} not encrypted due to following error: \n {error}'
             logger.logDebug(f'sent error email')
             notify_email(toEmail, fromEmail, message)
