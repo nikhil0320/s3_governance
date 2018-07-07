@@ -1,15 +1,16 @@
+"""
+s3_governance.py lambda module for S3 governance.
+
+"""
 import logging
 import os
 import botocore
-from utils.common_utils import get_config, notify_email, get_aws_resource
+from utils.common_utils import notify_email, get_aws_resource
 from utils.logger_utils import LoggerUtils as logger
-
 
 toEmail = os.environ['ToEmail']
 fromEmail = os.environ['FromEmail']
 
-#logger = logging.getLogger()
-#logger.setLevel() = 'DEBUG'
 
 def encryption_enabled(bucketName, s3, subscriberAccountId):
     """This function will return whether the Bucket is encrypted or not."""
@@ -37,7 +38,7 @@ def enable_encryption(bucketName, s3, subscriberAccountId):
         notify_email(toEmail, fromEmail, message)
         return True
     except botocore.exceptions.ClientError as error:
-        message =  f'Bucket {bucketName} in {subscriberAccountId} is not encrypted successfully due to following \n {error}'
+        message = f'Bucket {bucketName} in {subscriberAccountId} is not encrypted successfully due to following \n {error}'
         logger.logError(f'Bucket {bucketName} in {subscriberAccountId} is not encrypted successfully due to following \n {error}')
         notify_email(toEmail, fromEmail, message)
 

@@ -20,7 +20,7 @@ service: s3_governance
 provider:
   name: aws
   runtime: python3.6
-
+  region: us-east-1
 # you can overwrite defaults here
 #  stage: dev
 #  region: us-east-1
