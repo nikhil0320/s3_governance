@@ -1,69 +1,16 @@
-# Welcome to Serverless!
-#
-# This file is the main config file for your service.
-# It's very minimal at this point and uses default values.
-# You can always add more config options for more control.
-# We've included some commented out config examples here.
-# Just uncomment any of them to get that config option.
-#
-# For full config options, check the docs:
-#    docs.serverless.com
-#
-# Happy Coding!
-
 service: s3Governance
-
-# You can pin your service to only deploy with a specific Serverless version
-# Check out our docs for more details
-# frameworkVersion: "=X.X.X"
-
 provider:
   name: aws
   runtime: python3.6
   region: us-east-1
   stage: dev
-# you can overwrite defaults here
-#  stage: dev
-#  region: us-east-1
-
-# you can add statements to the Lambda function's IAM Role here
-#  iamRoleStatements:
-#    - Effect: "Allow"
-#      Action:
-#        - "s3:ListBucket"
-#      Resource: { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "ServerlessDeploymentBucket" } ] ]  }
-#    - Effect: "Allow"
-#      Action:
-#        - "s3:PutObject"
-#      Resource:
-#        Fn::Join:
-#          - ""
-#          - - "arn:aws:s3:::"
-#            - "Ref" : "ServerlessDeploymentBucket"
-#            - "/*"
-
-# you can define service wide environment variables here
-#  environment:
-#    variable1: value1
-#  role: arn:aws:iam::639015715993:role/LambdaExecutionRole
-#  environment:
-
-# you can add packaging information here
-#package:
-#  include:
-#    - include-me.py
-#    - include-me-dir/**
-#  exclude:
-#    - exclude-me.py
-#    - exclude-me-dir/**
-
 functions:
   s3Governance:
     handler: handler.lambda_handler
     name: s3_governance
-    role: arn:aws:iam::639015715993:role/LambdaExecutionRole
     memorySize: 128
     timeout: 60
+    role: RoleForLambdaInMgmtAccount
     versionFunctions: false
     environment:
       mgmt_role_common_name: IAMCrossAccounteRole
@@ -85,5 +32,32 @@ functions:
                 - s3.amazonaws.com
               eventName:
                 - CreateBucket
-                - DeleteBucketEncryption
-                  
+                - DeleteBucketEncryption 
+resources:
+  Resources:
+    RoleForLambdaInMgmtAccount:
+      Type: AWS::IAM::Role
+      Properties:
+        Path: /
+        RoleName: s3EncryptionLambda
+        AssumeRolePolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service:
+                  - lambda.amazonaws.com
+              Action: sts:AssumeRole
+        Policies:
+          - PolicyName: s3EncryptionPolicy
+            PolicyDocument:
+              Version: '2012-10-17'
+              Statement:
+                - Effect: Allow
+                  Action:
+                    - logs:CreateLogGroup
+                    - logs:CreateLogStream
+                    - logs:PutLogEvents
+                    - ses:SendEmail
+                    - sts:AssumeRole
+                  Resource: "*"

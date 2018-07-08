@@ -23,6 +23,8 @@ def get_aws_resource(resourceType, accountId, roleName, sessionName):
     except Exception as error:
         logger.logError(f'There is no proper permission to assume role in subscriber Account: {accountId}')
         exit()
+
+
 def notify_email(toEmail, fromEmail, message):
     """This function sends notification"""
     sesClient = boto3.client('ses')

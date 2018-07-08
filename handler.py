@@ -33,7 +33,7 @@ def enable_encryption(bucketName, s3, subscriberAccountId):
     """ This function enables the encryption on bucket """
     try:
         s3.put_bucket_encryption(Bucket=bucketName, ServerSideEncryptionConfiguration={'Rules':[{'ApplyServerSideEncryptionByDefault':{'SSEAlgorithm':'AES256'}},]})
-        logger.logError(f'Encrypted successfully and sent mail')
+        logger.logInfo(f'Encrypted successfully and sent mail')
         message = f'{bucketName} in account number: {subscriberAccountId} successfully encrypted.'
         notify_email(toEmail, fromEmail, message)
         return True
