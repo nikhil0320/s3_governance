@@ -21,7 +21,7 @@ provider:
   name: aws
   runtime: python3.6
   region: us-east-1
-  stage: dev
+  stage: dev 
 # you can overwrite defaults here
 #  stage: dev
 #  region: us-east-1
@@ -58,32 +58,56 @@ provider:
 #    - exclude-me-dir/**
 
 functions:
-  s3Governance:
+  lambda_handler: 
     handler: handler.lambda_handler
-    name: s3_governance
     role: arn:aws:iam::639015715993:role/LambdaExecutionRole
-    memorySize: 128
-    timeout: 60
-    versionFunctions: false
     environment:
       mgmt_role_common_name: IAMCrossAccounteRole
       ToEmail: nikhil.linga@reancloud.com
       FromEmail: nikhil.linga@reancloud.com
       Email_Subject: s3 bucket encryption status
-      logLevel: DEBUG
-    events:
-      - cloudwatchEvent:
-          name: s3-governance-cw-events
-          description: Event will trigger lambda function to encrypt s3 bucket
-          event:
-            source:
-              - aws.s3
-            detail-type:
-              - AWS API Call via CloudTrail
-            detail:
-              eventSource:
-                - s3.amazonaws.com
-              eventName:
-                - CreateBucket
-                - DeleteBucketEncryption
-                  
+    
+#    The following are a few example events you can configure
+#    NOTE: Please make sure to change your handler code to work with those events
+#    Check the event documentation for details
+#    events:
+#      - http:
+#          path: users/create
+#          method: get
+#      - s3: ${env:BUCKET}
+#      - schedule: rate(10 minutes)
+#      - sns: greeter-topic
+#      - stream: arn:aws:dynamodb:region:XXXXXX:table/foo/stream/1970-01-01T00:00:00.000
+#      - alexaSkill: amzn1.ask.skill.xx-xx-xx-xx
+#      - alexaSmartHome: amzn1.ask.skill.xx-xx-xx-xx
+#      - iot:
+#          sql: "SELECT * FROM 'some_topic'"
+#      - cloudwatchEvent:
+#          event:
+#            source:
+#              - "aws.ec2"
+#            detail-type:
+#              - "EC2 Instance State-change Notification"
+#            detail:
+#              state:
+#                - pending
+#      - cloudwatchLog: '/aws/lambda/hello'
+#      - cognitoUserPool:
+#          pool: MyUserPool
+#          trigger: PreSignUp
+
+#    Define function environment variables here
+#    environment:
+#      variable2: value2
+
+# you can add CloudFormation resource templates here
+#resources:
+#  Resources:
+#    NewResource:
+#      Type: AWS::S3::Bucket
+#      Properties:
+#        BucketName: my-new-bucket
+#  Outputs:
+#     NewOutput:
+#       Description: "Description for the output"
+#       Value: "Some output value"
